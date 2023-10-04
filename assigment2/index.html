@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Simple Website</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<body>
+    <h1>Welcome to My Website</h1>
+    <p>This is a basic web page with a script.</p>
+    <table id="productTable">
+        <tr>
+            <th>Id</th>
+            <th>name</th>
+            <th>Unit Price</th>
+            <th>Stock</th>
+            <th>Delete</th>
+        </tr>
+    <tbody>
+    </tbody>
+
+
+
+    </table>
+
+    <script>
+    const tableBody = document.querySelector('#productTable tbody');
+        axios.get(' https://northwind.vercel.app/api/products')
+  .then(function (response) {
+    response.data.forEach(element => {
+        const row = document.createElement('tr');
+        const tableGrid = document.createElement('td')
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "delete";
+        tableGrid.appendChild(deleteButton);
+        //<td>${deleteButton.innerHTML}</td>
+        row.innerHTML = `<td>${element.id}</td><td>${element.name}</td><td>${element.unitPrice}</td><td>${element.unitsInStock}</td>`;
+        row.appendChild(tableGrid);
+        tableBody.appendChild(row);
+        deleteButton.onclick = () => deleteProduct(row); 
+        console.log(element);
+    });
+    // Handle the successful response here
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    // Handle any errors that occurred during the request
+    console.error(error);
+  });
+
+function deleteProduct(row){
+    tableBody.removeChild(row);
+    axios.delete("https://northwind.vercel.app/api/products/" + row.cells[0].textContent)
+  .then(function (response) {
+    const tableBody = document.querySelector('#productTable tbody');
+
+    // Handle the successful deletion here
+  })
+  .catch(function (error) {
+    // Handle any errors that occurred during the request
+    console.error('Error:', error);
+  });
+}
+    </script>
+</body>
+</html>
